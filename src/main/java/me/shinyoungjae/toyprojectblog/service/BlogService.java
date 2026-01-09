@@ -3,8 +3,10 @@ package me.shinyoungjae.toyprojectblog.service;
 import lombok.RequiredArgsConstructor;
 import me.shinyoungjae.toyprojectblog.domain.Article;
 import me.shinyoungjae.toyprojectblog.dto.AddArticleRequest;
+import me.shinyoungjae.toyprojectblog.dto.UpdateArticleRequest;
 import me.shinyoungjae.toyprojectblog.repository.BlogRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,5 +35,15 @@ public class BlogService {
     // 블로그 글 삭제 메서드
     public void delete(long id) {
         blogRepository.deleteById(id);
+    }
+
+    @Transactional // 트랜잭션 메서드
+    public Article update(long id, UpdateArticleRequest request) {
+        Article article = blogRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+
+        article.update(request.getTitle(), request.getContent());
+
+        return article;
     }
 }
